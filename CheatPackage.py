@@ -34,20 +34,20 @@ class JSONFormatter:
         notebook.add(page4, text='Post')
         
         # page1 的版面
-        self.input_label_json_1 = ttk.Label(page1, text="請輸入JSON字串")
-        self.input_label_json_1.pack()
+        self.json_label_1 = ttk.Label(page1, text="請輸入JSON字串")
+        self.json_label_1.pack()
 
-        self.jsonInput = tk.Text(page1, height=18, width=80)
-        self.jsonInput.pack()
+        self.json_text_1 = tk.Text(page1, height=18, width=80)
+        self.json_text_1.pack()
 
-        self.output_label_json_2 = tk.Label(page1, text="結果")
-        self.output_label_json_2.pack()
+        self.json_label_2 = tk.Label(page1, text="結果")
+        self.json_label_2.pack()
 
-        self.jsonOutput = tk.Text(page1, height=18, width=80)
-        self.jsonOutput.pack()
+        self.json_text_2 = tk.Text(page1, height=18, width=80)
+        self.json_text_2.pack()
 
-        self.format_button_json1 = ttk.Button(page1, text="Format", command=self.format_json,style="success.OutLine.TButton")
-        self.format_button_json1.pack()
+        self.json_button_1 = ttk.Button(page1, text="Format", command=self.format_json,style="success.OutLine.TButton")
+        self.json_button_1.pack()
 
         # 創建標籤和輸入框
         self.label_sign_1 = tk.Label(page2, text="請輸入要簽名的字符串：")
@@ -118,13 +118,13 @@ class JSONFormatter:
 
     def format_json(self):
         try:
-            input_data = json.loads(self.jsonInput.get("1.0", "end-1c"))
+            input_data = json.loads(self.json_text_1.get("1.0", "end-1c"))
             output_data = json.dumps(input_data, indent=4)
-            self.jsonOutput.delete("1.0", tk.END)
-            self.jsonOutput.insert(tk.END, output_data)
+            self.json_text_2.delete("1.0", tk.END)
+            self.json_text_2.insert(tk.END, output_data)
         except json.decoder.JSONDecodeError:
-            self.jsonOutput.delete("1.0", tk.END)
-            self.jsonOutput.insert(tk.END, "Invalid JSON input")
+            self.json_text_2.delete("1.0", tk.END)
+            self.json_text_2.insert(tk.END, "Invalid JSON input")
             
     def convert_xml_sha256(self):
         xml_str = self.input_text_1.get("1.0", "end-1c")
@@ -223,6 +223,5 @@ class JSONFormatter:
 
 style = Style(theme='darkly')
 root = style.master
-# root = tk.Tk()
 json_formatter = JSONFormatter(root)
 root.mainloop()
