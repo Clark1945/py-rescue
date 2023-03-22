@@ -102,8 +102,11 @@ class JSONFormatter:
         self.post_label_2 = ttk.Label(page4,text="URL")
         self.post_label_2.pack()
 
-        self.post_text_2 = tk.Text(page4, height=1,width=80)
-        self.post_text_2.pack()
+        self.def_url = tk.StringVar(page4)
+
+        self.drop = ttk.OptionMenu(page4,self.def_url,"https://aiodir.payloop.com.tw/","https://aio.payloop.com.tw/Capture","https://aio.payloop.com.tw/Reverse","取消請款","https://aio.payloop.com.tw/Refund","取消退貨","https://aio.payloop.com.tw/Query","https://aiodir.payloop.com.tw/")
+        self.drop.pack()
+
 
         self.post_label_3 = ttk.Label(page4,text="Response Content")
         self.post_label_3.pack()
@@ -161,8 +164,6 @@ class JSONFormatter:
         self.sign_text_3.insert(tk.END, ans_xml)
         self.post_text_1.delete("1.0", tk.END)
         self.post_text_1.insert(tk.END, ans_xml)
-        self.post_text_2.delete("1.0", tk.END)
-        self.post_text_2.insert(tk.END, "https://aiodir.payloop.com.tw/")
 
     def convert_xml_md5(self):
         xml_str = self.sign_text_1.get("1.0", "end-1c")
@@ -198,8 +199,6 @@ class JSONFormatter:
         self.sign_text_3.insert(tk.END, ans_xml)
         self.post_text_1.delete("1.0", tk.END)
         self.post_text_1.insert(tk.END, ans_xml)
-        self.post_text_2.delete("1.0", tk.END)
-        self.post_text_2.insert(tk.END, "https://aiodir.payloop.com.tw/")
 
     def send_get(self):
         # 獲取輸入文本框中的內容
@@ -215,14 +214,17 @@ class JSONFormatter:
         json_key = json_text["kword"]
         
         # 在回傳值文本框中顯示回傳值
+        self.getKey_text_2.delete("1.0", tk.END)
         self.getKey_text_2.insert(tk.END, json_key)
+        self.sign_text_2.delete("1.0", tk.END)
         self.sign_text_2.insert(tk.END, json_key)
 
     def post(self):
         request = self.post_text_1.get("1.0", "end-1c")
-        url = self.post_text_2.get("1.0", "end-1c")
+        url = self.def_url.get()
         header={"Content-Type": "application/xml; charset=utf-8"}
         res = requests.post(url,headers=header,data=request.encode('utf-8'),allow_redirects=False, verify=False, timeout=30)
+        self.post_text_3.delete("1.0", tk.END)
         self.post_text_3.insert(tk.END,res.text)
         
 
