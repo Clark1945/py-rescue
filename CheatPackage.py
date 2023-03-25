@@ -207,18 +207,21 @@ class JSONFormatter:
         request=cdeRelayUrl+"api/merchant/default/term"+"?"+"merchantNo="+str(merchant_no)
 
         header = {"Content-Type": "application/json; charset=utf-8"}
-        req = requests.get(request,headers=header,allow_redirects=False, verify=False, timeout=30)
-        temp_text = req.text
-        
-        json_text = json.loads(temp_text)
-        json_key = json_text["kword"]
-        
-        # 在回傳值文本框中顯示回傳值
-        self.getKey_text_2.delete("1.0", tk.END)
-        self.getKey_text_2.insert(tk.END, json_key)
-        self.sign_text_2.delete("1.0", tk.END)
-        self.sign_text_2.insert(tk.END, json_key)
+        try:
+            req = requests.get(request,headers=header,allow_redirects=False, verify=False, timeout=30)
+            temp_text = req.text
+            json_text = json.loads(temp_text)
+            json_key = json_text["kword"]
+            # 在回傳值文本框中顯示回傳值
+            self.getKey_text_2.delete("1.0", tk.END)
+            self.getKey_text_2.insert(tk.END, json_key)
+            self.sign_text_2.delete("1.0", tk.END)
+            self.sign_text_2.insert(tk.END, json_key)
+        except KeyError:
+            self.getKey_text_2.delete("1.0", tk.END)
+            self.getKey_text_2.insert(tk.END, "お探しのmerchant_noは存在しないらしい~ガハハハッ")
 
+        
     def post(self):
         request = self.post_text_1.get("1.0", "end-1c")
         url = self.def_url.get()
