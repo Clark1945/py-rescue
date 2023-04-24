@@ -5,6 +5,7 @@ import json
 import xml.etree.ElementTree as ET
 from ttkbootstrap import Style
 import requests
+from xml.dom.minidom import parseString
 requests.packages.urllib3.disable_warnings()
 
 class JSONFormatter:
@@ -15,14 +16,14 @@ class JSONFormatter:
         # self.create_widgets()
 
         # 設置初始視窗大小
-        master.geometry("700x625")  
+        master.geometry("800x800")  
 
         # 設置分頁
         notebook = ttk.Notebook(master,bootstyle="success")
         notebook.pack(expand=True, fill='both')
 
         page1 = ttk.Frame(notebook)
-        notebook.add(page1, text='Json Formatter')
+        notebook.add(page1, text='Json/XML Formatter')
         
         page2 = ttk.Frame(notebook)
         notebook.add(page2, text='Sign')
@@ -37,35 +38,38 @@ class JSONFormatter:
         self.json_label_1 = ttk.Label(page1, text="請輸入JSON字串")
         self.json_label_1.pack()
 
-        self.json_text_1 = tk.Text(page1, height=15, width=80)
+        self.json_text_1 = tk.Text(page1, height=15, width=80,font=("Helvetica", 12))
         self.json_text_1.pack()
 
         self.json_label_2 = tk.Label(page1, text="結果")
         self.json_label_2.pack()
 
-        self.json_text_2 = tk.Text(page1, height=15, width=80)
+        self.json_text_2 = tk.Text(page1, height=15, width=80,font=("Helvetica", 12))
         self.json_text_2.pack()
 
-        self.json_button_1 = ttk.Button(page1, text="Format", command=self.format_json,style="success.OutLine.TButton")
+        self.json_button_1 = ttk.Button(page1, text="JSON Format", command=self.format_json,style="success.OutLine.TButton")
         self.json_button_1.pack()
+
+        self.xml_button_1 = ttk.Button(page1, text="XML Format", command=self.format_xml,style="success.OutLine.TButton")
+        self.xml_button_1.pack()
 
         # 創建標籤和輸入框
         self.sign_label_1 = tk.Label(page2, text="請輸入要簽名的字符串：")
         self.sign_label_1.pack()
 
-        self.sign_text_1 = tk.Text(page2, height=14,width=80)
+        self.sign_text_1 = tk.Text(page2, height=14,width=80,font=("Helvetica", 12))
         self.sign_text_1.pack()
 
         self.sign_label_2 = ttk.Label(page2, text="輸入Key")
         self.sign_label_2.pack()
 
-        self.sign_text_2 = tk.Text(page2, height=1,width=80)
+        self.sign_text_2 = tk.Text(page2, height=1,width=80,font=("Helvetica", 12))
         self.sign_text_2.pack()
 
         self.sign_label_3 = ttk.Label(page2, text="簽名結果：")
         self.sign_label_3.pack()
 
-        self.sign_text_3 = tk.Text(page2, height=14,width=80)
+        self.sign_text_3 = tk.Text(page2, height=14,width=80,font=("Helvetica", 12))
         self.sign_text_3.pack()
         
         # 創建按鈕和標籤
@@ -80,13 +84,13 @@ class JSONFormatter:
         self.getKey_label_1 = ttk.Label(page3,text="輸入merchant_no")
         self.getKey_label_1.pack()
 
-        self.getKey_text_1 = tk.Text(page3, height=1,width=80)
+        self.getKey_text_1 = tk.Text(page3, height=1,width=80,font=("Helvetica", 12))
         self.getKey_text_1.pack()
 
         self.getKey_label_2 = ttk.Label(page3,text="結果")
         self.getKey_label_2.pack()
         
-        self.getKey_text_2 = tk.Text(page3, height=1,width=80)
+        self.getKey_text_2 = tk.Text(page3, height=1,width=80,font=("Helvetica", 12))
         self.getKey_text_2.pack()
 
         self.getKey_button_1 = ttk.Button(page3, text="GenerateKey", command=self.send_get,style="success.OutLine.TButton")
@@ -96,7 +100,7 @@ class JSONFormatter:
         self.post_label_1 = ttk.Label(page4,text="Request Content")
         self.post_label_1.pack()
 
-        self.post_text_1 = tk.Text(page4, height=15,width=80)
+        self.post_text_1 = tk.Text(page4, height=15,width=80,font=("Helvetica", 12))
         self.post_text_1.pack()
 
         self.post_label_2 = ttk.Label(page4,text="URL")
@@ -111,7 +115,7 @@ class JSONFormatter:
         self.post_label_3 = ttk.Label(page4,text="Response Content")
         self.post_label_3.pack()
 
-        self.post_text_3 = tk.Text(page4, height=15,width=80)
+        self.post_text_3 = tk.Text(page4, height=15,width=80,font=("Helvetica", 12))
         self.post_text_3.pack()
 
         self.post_button = ttk.Button(page4, text="Post", command=self.post,style="success.OutLine.TButton")
@@ -127,11 +131,21 @@ class JSONFormatter:
         except json.decoder.JSONDecodeError:
             self.json_text_2.delete("1.0", tk.END)
             self.json_text_2.insert(tk.END, "Invalid JSON input")
-            
+    
+    def format_xml(self):
+        """格式化XML文件"""
+        try:
+            xml = parseString(self.json_text_1.get("1.0", "end-1c"))
+            formatted_xml = xml.toprettyxml()
+            self.json_text_2.delete("1.0", tk.END)
+            self.json_text_2.insert(tk.END, formatted_xml)
+        except json.decoder.JSONDecodeError:
+            self.json_text_2.delete("1.0", tk.END)
+            self.json_text_2.insert(tk.END, "Invalid XML input")
+
     def convert_xml_sha256(self):
         xml_str = self.sign_text_1.get("1.0", "end-1c")
         key_str = self.sign_text_2.get("1.0", "end-1c")
-
         # 簽章加入XML
         try :
             start_point = xml_str.index("<sign>")
@@ -142,22 +156,17 @@ class JSONFormatter:
         # Parse XML string into a dictionary
         xml_dict = {}
         root = ET.fromstring(xml_str)
-
         for child in root:
             xml_dict[child.tag] = child.text
         sorted_xml = sorted(xml_dict.items())
-        
         # Construct query string
         query = ""
         for item in sorted_xml:
             query += f"{item[0]}={item[1]}&"
         query += f"key={key_str}"
-        
         hash_object = hashlib.sha256(query.encode())
-
         # 獲取散列值並轉換為十六進制字符串
         sign="<sign><![CDATA["+hash_object.hexdigest().upper()+"]]></sign>\n"
-
         xml_str_index = xml_str.index("</xml>")
         ans_xml = xml_str[0:xml_str_index]+sign+xml_str[xml_str_index:]
         self.sign_text_3.delete("1.0", tk.END)
@@ -192,7 +201,6 @@ class JSONFormatter:
         sign_value.update(query.encode(encoding='utf-8'))
         # self.signature_text.config(text=sign_value.hexdigest().upper())
         sign="<sign><![CDATA["+sign_value.hexdigest().upper()+"]]></sign>\n"
-
         xml_str_index = xml_str.index("</xml>")
         ans_xml = xml_str[0:xml_str_index]+sign+xml_str[xml_str_index:]
         self.sign_text_3.delete("1.0", tk.END)
@@ -221,7 +229,6 @@ class JSONFormatter:
             self.getKey_text_2.delete("1.0", tk.END)
             self.getKey_text_2.insert(tk.END, "お探しのmerchant_noは存在しないらしい~ガハハハッ")
 
-        
     def post(self):
         request = self.post_text_1.get("1.0", "end-1c")
         url = self.def_url.get()
