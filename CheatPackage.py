@@ -14,7 +14,6 @@ class JSONFormatter:
         master.title("Py工具包")
         
         # self.create_widgets()
-
         # 設置初始視窗大小
         master.geometry("800x800")  
 
@@ -124,22 +123,22 @@ class JSONFormatter:
 
     def format_json(self):
         try:
-            input_data = json.loads(self.json_text_1.get("1.0", "end-1c"))
+            input_data = json.loads(self.json_text_1.get("1.0", "end-1c").strip())
             output_data = json.dumps(input_data, indent=4)
             self.json_text_2.delete("1.0", tk.END)
             self.json_text_2.insert(tk.END, output_data)
-        except json.decoder.JSONDecodeError:
+        except ValueError:
             self.json_text_2.delete("1.0", tk.END)
             self.json_text_2.insert(tk.END, "Invalid JSON input")
     
     def format_xml(self):
         """格式化XML文件"""
         try:
-            xml = parseString(self.json_text_1.get("1.0", "end-1c"))
+            xml = parseString(self.json_text_1.get("1.0", "end-1c").strip())
             formatted_xml = xml.toprettyxml()
             self.json_text_2.delete("1.0", tk.END)
             self.json_text_2.insert(tk.END, formatted_xml)
-        except json.decoder.JSONDecodeError:
+        except Exception:
             self.json_text_2.delete("1.0", tk.END)
             self.json_text_2.insert(tk.END, "Invalid XML input")
 
@@ -155,58 +154,62 @@ class JSONFormatter:
             print("No Sign")   
         # Parse XML string into a dictionary
         xml_dict = {}
-        root = ET.fromstring(xml_str)
-        for child in root:
-            xml_dict[child.tag] = child.text
-        sorted_xml = sorted(xml_dict.items())
-        # Construct query string
-        query = ""
-        for item in sorted_xml:
-            query += f"{item[0]}={item[1]}&"
-        query += f"key={key_str}"
-        hash_object = hashlib.sha256(query.encode())
-        # 獲取散列值並轉換為十六進制字符串
-        sign="<sign><![CDATA["+hash_object.hexdigest().upper()+"]]></sign>\n"
-        xml_str_index = xml_str.index("</xml>")
-        ans_xml = xml_str[0:xml_str_index]+sign+xml_str[xml_str_index:]
-        self.sign_text_3.delete("1.0", tk.END)
-        self.sign_text_3.insert(tk.END, ans_xml)
-        self.post_text_1.delete("1.0", tk.END)
-        self.post_text_1.insert(tk.END, ans_xml)
+        try:
+            root = ET.fromstring(xml_str)
+            for child in root:
+                xml_dict[child.tag] = child.text
+            sorted_xml = sorted(xml_dict.items())
+            # Construct query string
+            query = ""
+            for item in sorted_xml:
+                query += f"{item[0]}={item[1]}&"
+            query += f"key={key_str}"
+            hash_object = hashlib.sha256(query.encode())
+            # 獲取散列值並轉換為十六進制字符串
+            sign="<sign><![CDATA["+hash_object.hexdigest().upper()+"]]></sign>\n"
+            xml_str_index = xml_str.index("</xml>")
+            ans_xml = xml_str[0:xml_str_index]+sign+xml_str[xml_str_index:]
+            self.sign_text_3.delete("1.0", tk.END)
+            self.sign_text_3.insert(tk.END, ans_xml)
+            self.post_text_1.delete("1.0", tk.END)
+            self.post_text_1.insert(tk.END, ans_xml)
+        except Exception:
+            self.sign_text_3.delete("1.0", tk.END)
+            self.sign_text_3.insert(tk.END, "XML格式異常")
 
     def convert_xml_md5(self):
         xml_str = self.sign_text_1.get("1.0", "end-1c")
         key_str = self.sign_text_2.get("1.0", "end-1c")
 
         # 簽章加入XML
-        try :
+        try:
             start_point = xml_str.index("<sign>")
             end_point = xml_str.index("</sign>") 
-            xml_str=xml_str[0:start_point-1]+xml_str[end_point+7:]
-        except:
-            print("No Sign")   
-
-        # Parse XML string into a dictionary
-        xml_dict = {}
-        root = ET.fromstring(xml_str)
-        for child in root:
-            xml_dict[child.tag] = child.text
-        sorted_xml = sorted(xml_dict.items())
-        # Construct query string
-        query = ""
-        for item in sorted_xml:
-            query += f"{item[0]}={item[1]}&"
-        query += f"key={key_str}"
-        sign_value = hashlib.md5()
-        sign_value.update(query.encode(encoding='utf-8'))
-        # self.signature_text.config(text=sign_value.hexdigest().upper())
-        sign="<sign><![CDATA["+sign_value.hexdigest().upper()+"]]></sign>\n"
-        xml_str_index = xml_str.index("</xml>")
-        ans_xml = xml_str[0:xml_str_index]+sign+xml_str[xml_str_index:]
-        self.sign_text_3.delete("1.0", tk.END)
-        self.sign_text_3.insert(tk.END, ans_xml)
-        self.post_text_1.delete("1.0", tk.END)
-        self.post_text_1.insert(tk.END, ans_xml)
+            xml_str=xml_str[0:start_point-1]+xml_str[end_point+7:]  
+            # Parse XML string into a dictionary
+            xml_dict = {}
+            root = ET.fromstring(xml_str)
+            for child in root:
+                xml_dict[child.tag] = child.text
+            sorted_xml = sorted(xml_dict.items())
+            # Construct query string
+            query = ""
+            for item in sorted_xml:
+                query += f"{item[0]}={item[1]}&"
+            query += f"key={key_str}"
+            sign_value = hashlib.md5()
+            sign_value.update(query.encode(encoding='utf-8'))
+            # self.signature_text.config(text=sign_value.hexdigest().upper())
+            sign="<sign><![CDATA["+sign_value.hexdigest().upper()+"]]></sign>\n"
+            xml_str_index = xml_str.index("</xml>")
+            ans_xml = xml_str[0:xml_str_index]+sign+xml_str[xml_str_index:]
+            self.sign_text_3.delete("1.0", tk.END)
+            self.sign_text_3.insert(tk.END, ans_xml)
+            self.post_text_1.delete("1.0", tk.END)
+            self.post_text_1.insert(tk.END, ans_xml)
+        except Exception:
+            self.sign_text_3.delete("1.0", tk.END)
+            self.sign_text_3.insert(tk.END, "XML格式錯誤")
 
     def send_get(self):
         # 獲取輸入文本框中的內容
@@ -237,7 +240,6 @@ class JSONFormatter:
         self.post_text_3.delete("1.0", tk.END)
         self.post_text_3.insert(tk.END,res.text)
         
-
 style = Style(theme='darkly')
 root = style.master
 json_formatter = JSONFormatter(root)
