@@ -32,6 +32,9 @@ class JSONFormatter:
 
         page4 = ttk.Frame(notebook)
         notebook.add(page4, text='Post')
+
+        page5 = ttk.Frame(notebook)
+        notebook.add(page5, text='GetTransaction')
         
         # page1 的版面
         self.json_label_1 = ttk.Label(page1, text="請輸入JSON字串")
@@ -92,7 +95,7 @@ class JSONFormatter:
         self.getKey_text_2 = tk.Text(page3, height=1,width=80,font=("Helvetica", 12))
         self.getKey_text_2.pack()
 
-        self.getKey_button_1 = ttk.Button(page3, text="GenerateKey", command=self.send_get,style="success.OutLine.TButton")
+        self.getKey_button_1 = ttk.Button(page3, text="GenerateKey", command=self.send_getKword,style="success.OutLine.TButton")
         self.getKey_button_1.pack()
         
 
@@ -120,6 +123,23 @@ class JSONFormatter:
         self.post_button = ttk.Button(page4, text="Post", command=self.post,style="success.OutLine.TButton")
         self.post_button.pack()
 
+        self.tx_input_1_label = ttk.Label(page5,text="merchant_no")
+        self.tx_input_1_label.pack()
+        self.tx_input_1 = tk.Entry(page5)
+        self.tx_input_1.pack()
+        self.tx_input_2_label = ttk.Label(page5,text="out_trade_no")
+        self.tx_input_2_label.pack()
+        self.tx_input_2 = tk.Entry(page5)
+        self.tx_input_2.pack()
+        self.tx_input_3_label = ttk.Label(page5,text="transaction_id")
+        self.tx_input_3_label.pack()
+        self.tx_input_3 = tk.Entry(page5)
+        self.tx_input_3.pack()
+        self.post_button = ttk.Button(page5, text="GetTx", command=self.getTxInfo,style="success.OutLine.TButton")
+        self.post_button.pack()
+        self.tx_response = tk.Text(page5, height=20,width=80,font=("Helvetica", 14))
+        self.tx_response.pack()
+
 
     def format_json(self):
         try:
@@ -134,8 +154,9 @@ class JSONFormatter:
     def format_xml(self):
         """格式化XML文件"""
         try:
-            xml = parseString(self.json_text_1.get("1.0", "end-1c").strip())
-            formatted_xml = xml.toprettyxml()
+            xml = parseString(self.json_text_1.get("1.0", "end-1c"))
+            formatted_xml = xml.toprettyxml(indent="",newl="")
+            formatted_xml = formatted_xml.replace('<?xml version=\"1.0\" ?>',"")
             self.json_text_2.delete("1.0", tk.END)
             self.json_text_2.insert(tk.END, formatted_xml)
         except Exception:
@@ -211,7 +232,7 @@ class JSONFormatter:
             self.sign_text_3.delete("1.0", tk.END)
             self.sign_text_3.insert(tk.END, "XML格式錯誤")
 
-    def send_get(self):
+    def send_getKword(self):
         # 獲取輸入文本框中的內容
         merchant_no = self.getKey_text_1.get("1.0", "end-1c")
         cdeRelayUrl = "https://cde-relay.payloop.com.tw/"
@@ -239,6 +260,45 @@ class JSONFormatter:
         res = requests.post(url,headers=header,data=request.encode('utf-8'),allow_redirects=False, verify=False, timeout=30)
         self.post_text_3.delete("1.0", tk.END)
         self.post_text_3.insert(tk.END,res.text)
+
+    def getTxInfo(self):
+         # 獲取輸入文本框中的內容
+        merchant_no = self.tx_input_1.get()
+        order_no = self.tx_input_2.get()
+        txn_no = self.tx_input_3.get()
+        if (order_no != None and txn_no != None or merchant_no != None):
+            cdeRelayUrl = "https://cde-relay.payloop.com.tw/"
+            request=cdeRelayUrl+"api/tx/getTmTp"+"?"+"merchantNo="+str(merchant_no)+"&orderNo="+str(order_no)+"&txnNo="+txn_no
+
+            header = {"Content-Type": "application/json; charset=utf-8"}
+            try:
+                req = requests.get(request,headers=header,allow_redirects=False, verify=False, timeout=30)
+                temp_text = req.text
+                json_text = json.loads(temp_text)
+                outputText = "Transaction_id = "+str(json_text["tmTxnNo"])+"\n"\
+                "Merchant_no = "+ str(json_text["tmMerchantNo"])+"\n"\
+                "MID = "+ str(json_text["tmMid"])+"\n"\
+                "交易類型 = "+ ("消費扣款" if str(json_text["tmType"])== "1" else "退款")+"\n"\
+                "交易模式 = "+ ("一般" if(str(json_text["tmTradeMode"])=="0") else "分期" if(str(json_text["tmTradeMode"])=="1") else "UP分期")+"\n"\
+                "交易狀態 = "+ ("待付款" if(str(json_text["tmStatus"])=="0") else "交易成功" if(str(json_text["tmStatus"])=="1") else "已退款" if(str(json_text["tmStatus"])=="2") else "退款成功" if(str(json_text["tmStatus"])=="3") else "交易失敗") +"\n"\
+                "交易時間 = "+ str(json_text["tmTxnTime"])+"\n"\
+                "交易Gateway = "+ str(json_text["tmGateway"])+"\n"\
+                "交易銀行 = "+ str(json_text["tmOutChannel"])+"\n"\
+                "訂單編號 = "+ str(json_text["tpOrderNo"])+"\n"\
+                "交易卡號 = "+ str(json_text["tpAuthData1"])+"\n"\
+                "授權模式 = "+ ("非3D交易" if(str(json_text["tpThreeDomainSecure"])=="N") else "3D交易")+"\n"\
+                "訂單金額 = "+ str(json_text["tmAmt"])+"\n"\
+                "Scheduler_Keep = "+ str(json_text["tmSchedulerKeep"])+"\n"\
+                "請款金額 = "+ str(json_text["tmSettleFee"])+"\n"\
+                "請款時間 = "+ str(json_text["tmSettleTime"])+"\n"\
+                "請款已清算時間 = "+ str(json_text["tmRequestPayCompleteTime"])
+                
+                # 在回傳值文本框中顯示回傳值
+                self.tx_response.delete("1.0", tk.END)
+                self.tx_response.insert(tk.END, outputText)
+            except KeyError:
+                self.tx_response.delete("1.0", tk.END)
+                self.tx_response.insert(tk.END, "お探しのmerchant_noは存在しないらしい~ガハハハッ")
         
 style = Style(theme='darkly')
 root = style.master
