@@ -8,7 +8,7 @@ import requests
 from xml.dom.minidom import parseString
 requests.packages.urllib3.disable_warnings()
 
-class JSONFormatter:
+class PythonTool:
     def __init__(self, master):
         self.master = master
         master.title("Py工具包")
@@ -16,8 +16,9 @@ class JSONFormatter:
         # self.create_widgets()
         # 設置初始視窗大小
         master.geometry("800x800")  
-
         # 設置分頁
+        
+
         notebook = ttk.Notebook(master,bootstyle="success")
         notebook.pack(expand=True, fill='both')
 
@@ -37,13 +38,13 @@ class JSONFormatter:
         notebook.add(page5, text='GetTransaction')
         
         # page1 的版面
-        self.json_label_1 = ttk.Label(page1, text="請輸入JSON字串")
+        self.json_label_1 = ttk.Label(page1, text="輸入JSON或是XML格式")
         self.json_label_1.pack()
 
         self.json_text_1 = tk.Text(page1, height=15, width=80,font=("Helvetica", 12))
         self.json_text_1.pack()
 
-        self.json_label_2 = tk.Label(page1, text="結果")
+        self.json_label_2 = tk.Label(page1, text="Result")
         self.json_label_2.pack()
 
         self.json_text_2 = tk.Text(page1, height=15, width=80,font=("Helvetica", 12))
@@ -56,13 +57,13 @@ class JSONFormatter:
         self.xml_button_1.pack()
 
         # 創建標籤和輸入框
-        self.sign_label_1 = tk.Label(page2, text="請輸入要簽名的字符串：")
+        self.sign_label_1 = tk.Label(page2, text="請輸入要簽名的字串：")
         self.sign_label_1.pack()
 
         self.sign_text_1 = tk.Text(page2, height=14,width=80,font=("Helvetica", 12))
         self.sign_text_1.pack()
 
-        self.sign_label_2 = ttk.Label(page2, text="輸入Key")
+        self.sign_label_2 = ttk.Label(page2, text="輸入Kword")
         self.sign_label_2.pack()
 
         self.sign_text_2 = tk.Text(page2, height=1,width=80,font=("Helvetica", 12))
@@ -127,11 +128,11 @@ class JSONFormatter:
         self.tx_input_1_label.pack()
         self.tx_input_1 = tk.Entry(page5)
         self.tx_input_1.pack()
-        self.tx_input_2_label = ttk.Label(page5,text="out_trade_no")
+        self.tx_input_2_label = ttk.Label(page5,text="out_trade_no (與 transaction_id 擇一即可)")
         self.tx_input_2_label.pack()
         self.tx_input_2 = tk.Entry(page5)
         self.tx_input_2.pack()
-        self.tx_input_3_label = ttk.Label(page5,text="transaction_id")
+        self.tx_input_3_label = ttk.Label(page5,text="transaction_id (與 out_trade_no 擇一即可)")
         self.tx_input_3_label.pack()
         self.tx_input_3 = tk.Entry(page5)
         self.tx_input_3.pack()
@@ -140,7 +141,25 @@ class JSONFormatter:
         self.tx_response = tk.Text(page5, height=20,width=80,font=("Helvetica", 14))
         self.tx_response.pack()
 
+        master.bind("<Map>",self.loadData())
 
+
+    def loadData(self):
+        allText = ""
+        with open("record.txt","r") as file:
+            for line in file.readlines():
+                allText+=line
+        allText=allText.replace("'",'"')
+        allDict = json.loads(allText)
+        if(allDict != None):
+            self.sign_text_1.insert(tk.END, allDict["sign_text_1"])
+            self.sign_text_2.insert(tk.END, allDict["sign_text_2"])
+            self.sign_text_3.insert(tk.END, allDict["sign_text_3"])
+            self.getKey_text_1.insert(tk.END, allDict["getKey_text_1"])
+            self.getKey_text_2.insert(tk.END, allDict["getKey_text_2"])
+            self.post_text_1.insert(tk.END, allDict["post_text_1"])
+            self.post_text_3.insert(tk.END, allDict["post_text_3"])
+            
     def format_json(self):
         try:
             input_data = json.loads(self.json_text_1.get("1.0", "end-1c").strip())
@@ -156,7 +175,7 @@ class JSONFormatter:
         try:
             xml = parseString(self.json_text_1.get("1.0", "end-1c"))
             formatted_xml = xml.toprettyxml(indent="",newl="")
-            formatted_xml = formatted_xml.replace('<?xml version=\"1.0\" ?>',"")
+            formatted_xml = formatted_xml.replace('<?xml version="1.0" ?>',"")
             self.json_text_2.delete("1.0", tk.END)
             self.json_text_2.insert(tk.END, formatted_xml)
         except Exception:
@@ -258,6 +277,19 @@ class JSONFormatter:
         url = self.def_url.get()
         header={"Content-Type": "application/xml; charset=utf-8"}
         res = requests.post(url,headers=header,data=request.encode('utf-8'),allow_redirects=False, verify=False, timeout=30)
+
+        all_text = {}
+        all_text["sign_text_1"] = str(self.sign_text_1.get("1.0", "end-1c"))
+        all_text["sign_text_2"] = str(self.sign_text_2.get("1.0", "end-1c"))
+        all_text["sign_text_3"] = str(self.sign_text_3.get("1.0", "end-1c"))
+        all_text["getKey_text_1"] = str(self.getKey_text_1.get("1.0", "end-1c"))
+        all_text["getKey_text_2"] = str(self.getKey_text_2.get("1.0", "end-1c"))
+        all_text["post_text_1"] = str(self.post_text_1.get("1.0", "end-1c"))
+        all_text["post_text_3"] = str(res.text)
+
+        with open("record.txt", "w") as text_file:
+                text_file.write(str(all_text))
+        
         self.post_text_3.delete("1.0", tk.END)
         self.post_text_3.insert(tk.END,res.text)
 
@@ -302,5 +334,5 @@ class JSONFormatter:
         
 style = Style(theme='darkly')
 root = style.master
-json_formatter = JSONFormatter(root)
+json_formatter = PythonTool(root)
 root.mainloop()
