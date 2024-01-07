@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AC交易測試用</title>
+</head>
+<body>
+<nav>
+    <li class="nav"><a href="./TransactionPage.html">交易</a></li>
+    <li class="nav"><a href="../Sign.html">SHA-256/MD5簽章</a></li>
+    <li class="nav"><a href="../UB_Inquiry.html">聯邦訂單查詢</a></li>
+    <li class="nav"><a href="../Query_Tx.html">查訂單</a></li>
+    <li class="nav"><a href="../TeleServiceLog.html">TeleService log</a></li>
+    <li class="nav"><a href="../Report.html">報送</a></li>
+</nav>
+<div class="title">
+    <h1>Transaction !!!!!</h1>
+</div>
+<div class="column-filter-container">
+    <form action="/AC_payment" method="post">
+        <div class="filter=column">
+            Domain：
+            <label>
+                <input type="radio" name="Domain" value="UAT">
+                UAT
+            </label>
+            <label>
+                <input type="radio" name="Domain" value="Production">
+                Production
+            </label>
+        </div>
+        <div class="filter=column">
+            Behavior：
+            <label>
+                <input type="radio" name="Behavior" value="Auth">
+                Auth
+            </label>
+            <label>
+                <input type="radio" name="Behavior" value="Reverse">
+                Reverse
+            </label>
+            <label>
+                <input type="radio" name="Behavior" value="Capture">
+                Capture
+            </label>
+            <label>
+                <input type="radio" name="Behavior" value="Refund">
+                Refund
+            </label>
+            <label>
+                <input type="radio" name="Behavior" value="Query">
+                Query
+            </label>
+        </div>
+        <div class="filter=column">
+            Transaction Type：
+            <label>
+                <input type="radio" name="Type" value="3DS">
+                3DS
+            </label>
+            <label>
+                <input type="radio" name="Type" value="SSL">
+                SSL
+            </label>
+        </div>
+        <div class="filter=column">
+            Pay Mode：
+            <label>
+                <input type="radio" name="PayMode" value="Default">
+                Default
+            </label>
+            <label>
+                <input type="radio" name="PayMode" value="Installment">
+                Installment
+            </label>
+        </div>
+        <div class="filter=column">
+            Pay Type：
+            <label>
+                <input type="radio" name="PayType" value="Card">
+                Card
+            </label>
+            <label>
+                <input type="radio" name="PayType" value="Prime">
+                Prime
+            </label>
+            <label>
+                <input type="radio" name="PayType" value="URL">
+            </label>URL
+
+            <label>
+                <input type="radio" name="PayType" value="IcashPay">
+                IcashPay
+            </label>
+            <label>
+                <input type="radio" name="PayType" value="JKOPay">
+                JKO Pay
+            </label>
+            <label>
+                <input type="radio" name="PayType" value="LinePay">
+                Line Pay
+            </label>
+            <label>
+                <input type="radio" name="PayType" value="GooglePay">
+                GooglePay
+            </label>
+            <label>
+                <input type="radio" name="PayType" value="ApplePay">
+                ApplePay
+            </label>
+
+        </div>
+        <div class="filter=column">
+            Capture Type：
+            <label>
+                <input type="radio" name="Auto-Settle" value="Auto-Settle">Auto-Settle
+            </label>
+            <label>
+                <input type="radio" name="Auto-Settle" value="Non-Auto-Settle">Non-Auto-Settle
+            </label>
+        </div>
+
+        <div class="selection-area">
+            Merchant No：<label>
+            <input type="text" name="merchantNo">
+        </label><br>
+            Order No：<label>
+            <input type="text" name="orderNo">
+        </label>
+            Transaction Id：<label>
+            <input type="text" name="transactionId">
+        </label><br>
+            Total Fee：<label>
+            <input type="text" name="totalFee">
+        </label>
+            Settle Fee：<label>
+            <input type="text" name="settleFee">
+        </label><br>
+            Pan：<label>
+            <input type="text" name="pan">
+        </label><br>
+            Expire Month：<label>
+            <input type="text" name="expireMonth">
+        </label><br>
+            Expire Year：<label>
+            <input type="text" name="expireYear">
+        </label><br>
+            CVV：<label>
+            <input type="text" name="cvv">
+        </label><br>
+            <button type="submit" name="tx">交易</button>
+        </div>
+    </form>
+</div>
+
+Result：<br>
+<div class="text-container" id="text-container"></div>
+</body>
+
+<style>
+    .column-filter-container {
+        width: 800px;
+        height: 400px;
+        background-color: darkcyan;
+        border: 1px solid black;
+    }
+
+    .title {
+        text-align: center;
+    }
+
+    .nav {
+        width: 200px;
+        height: 30px;
+        display: inline-block;
+    }
+</style>
+
+<script>
+    function displaySelected() {
+      var selectedLanguage = document.querySelector('input[name="Domain"]:checked').value;
+      // var selectedAge = document.querySelector('input[name="age"]:checked').value;
+      document.getElementById("text-container").innerHTML = "你選擇的 Web 語言是：" + selectedLanguage + "，年齡範圍是：";
+    }
+</script>
+</html>

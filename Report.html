@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AC交易測試用</title>
+</head>
+<body>
+<nav>
+        <li class="nav"><a href="templates/TransactionPage.html">交易</a></li>
+        <li class="nav"><a href="./Sign.html">SHA-256/MD5簽章</a></li>
+        <li class="nav"><a href="./UB_Inquiry.html">聯邦訂單查詢</a></li>
+        <li class="nav"><a href="./Query_Tx.html">查訂單</a></li>
+        <li class="nav"><a href="./TeleServiceLog.html">TeleService log</a></li>
+        <li class="nav"><a href="./Report.html">報送</a></li>
+</nav>
+<div class="title">
+    <h1>Report !!!!!</h1>
+</div>
+<div class="column-filter-container">
+    <div class="filter=column">
+        Domain：
+        <label>
+            <input type="radio" name="UAT">
+        </label>UAT
+        <label>
+            <input type="radio" name="Production">
+        </label>Production
+    </div>
+    <div class="filter=column">
+        Behavior：
+        <label>
+            <input type="radio" name="Auth">
+        </label>Auth
+        <label>
+            <input type="radio" name="Reverse">
+        </label>Reverse
+        <label>
+            <input type="radio" name="Capture">
+        </label>Capture
+        <label>
+            <input type="radio" name="Refund">
+        </label>Refund
+        <label>
+            <input type="radio" name="Query">
+        </label>Query
+    </div>
+    <div class="filter=column">
+        Transaction Type：
+        <label>
+            <input type="radio" name="3DS">
+        </label>3DS
+        <label>
+            <input type="radio" name="SSL">
+        </label>SSL
+    </div>
+    <div class="filter=column">
+        Pay Mode：
+        <label>
+            <input type="radio" name="Default">
+        </label>Default
+        <label>
+            <input type="radio" name="Installment">
+        </label>Installment
+    </div>
+    <div class="filter=column">
+        Pay Type：
+        <label>
+            <input type="radio" name="Card">
+        </label>Card
+        <label>
+            <input type="radio" name="Prime">
+        </label>Prime
+        <label>
+            <input type="radio" name="Prime">
+        </label>URL
+        <label>
+            <input type="radio" name="IcashPay">
+        </label>IcashPay
+        <label>
+            <input type="radio" name="JKOPay">
+        </label>JKO Pay
+        <label>
+            <input type="radio" name="JKOPay">
+        </label>Line Pay
+        <label>
+            <input type="radio" name="GooglePay">
+        </label>GooglePay
+        <label>
+            <input type="radio" name="GooglePay">
+        </label>ApplePay
+
+    </div>
+    <div class="filter=column">
+        Capture Type：
+        <input type="radio" name="Auto-Settle">Auto-Settle
+        <input type="radio" name="Non-Auto-Settle">Non-Auto-Settle
+    </div>
+    <div class="selection-area">
+        Merchant No：<label>
+        <input type="text" name="merchantNo">
+    </label>
+        <br>
+        <button type="button" name="tx">查詢</button>
+    </div>
+</div>
+
+Result：<br>
+<div class="text-container"></div>
+</body>
+
+<style>
+    .column-filter-container {
+        width: 800px;
+        height: 400px;
+        background-color: darkcyan;
+        border: 1px solid black;
+    }
+
+    .title {
+        text-align: center;
+    }
+
+    .nav {
+        width: 200px;
+        height: 30px;
+        display: inline-block;
+    }
+</style>
+</html>

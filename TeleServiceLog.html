@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AC交易測試用</title>
+</head>
+<body>
+<nav>
+        <li class="nav"><a href="templates/TransactionPage.html">交易</a></li>
+        <li class="nav"><a href="./Sign.html">SHA-256/MD5簽章</a></li>
+        <li class="nav"><a href="./UB_Inquiry.html">聯邦訂單查詢</a></li>
+        <li class="nav"><a href="./Query_Tx.html">查訂單</a></li>
+        <li class="nav"><a href="./TeleServiceLog.html">TeleService log</a></li>
+        <li class="nav"><a href="./Report.html">報送</a></li>
+</nav>
+<div class="title">
+    <h1>Log !!!!!</h1>
+</div>
+<div class="column-filter-container">
+    <div class="filter=column">
+        Domain：
+        <label>
+            <input type="radio" name="UAT">
+        </label>UAT
+        <label>
+            <input type="radio" name="Production">
+        </label>Production
+    </div>
+    <div class="filter=column">
+        Pay Type：
+        <label>
+            <input type="radio" name="Card">
+        </label>Card
+        <label>
+            <input type="radio" name="Prime">
+        </label>Prime
+        <label>
+            <input type="radio" name="Prime">
+        </label>URL
+        <label>
+            <input type="radio" name="IcashPay">
+        </label>IcashPay
+        <label>
+            <input type="radio" name="JKOPay">
+        </label>JKO Pay
+        <label>
+            <input type="radio" name="JKOPay">
+        </label>Line Pay
+        <label>
+            <input type="radio" name="GooglePay">
+        </label>GooglePay
+        <label>
+            <input type="radio" name="GooglePay">
+        </label>ApplePay
+
+    </div>
+    <div class="selection-area">
+        Id：<label>
+        <input type="text" name="Id">
+    </label><br>
+        <button type="button" name="tx">交易</button>
+    </div>
+</div>
+
+Result：<br>
+<div class="text-container"></div>
+</body>
+
+<style>
+    .column-filter-container {
+        width: 800px;
+        height: 400px;
+        background-color: darkcyan;
+        border: 1px solid black;
+    }
+
+    .title {
+        text-align: center;
+    }
+
+    .nav {
+        width: 200px;
+        height: 30px;
+        display: inline-block;
+    }
+</style>
+</html>

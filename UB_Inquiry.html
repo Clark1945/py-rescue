@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AC交易測試用</title>
+</head>
+<body>
+    <nav>
+        <li class="nav"><a href="templates/TransactionPage.html">交易</a></li>
+        <li class="nav"><a href="./Sign.html">SHA-256/MD5簽章</a></li>
+        <li class="nav"><a href="./UB_Inquiry.html">聯邦訂單查詢</a></li>
+        <li class="nav"><a href="./Query_Tx.html">查訂單</a></li>
+        <li class="nav"><a href="./TeleServiceLog.html">TeleService log</a></li>
+        <li class="nav"><a href="./Report.html">報送</a></li>
+    </nav>
+    <div class="title">
+        <h1>Inquiry !!!!!</h1>
+    </div>
+    <div class = "column-filter-container">
+        <div class="filter=column">
+            Domain：
+            <label>
+                <input type="radio" name="UAT">
+            </label>UAT
+            <label>
+                <input type="radio" name="Production">
+            </label>Production
+        </div>
+        <div class="filter=column">
+            Behavior：
+            <label>
+                <input type="radio" name="Query">
+            </label>Query
+        </div>
+        <div class="selection-area">
+            Message Id：<label>
+            <input type="text" name="messageId">
+        </label><br>
+        <button type="button" name="tx">Query</button>
+        </div>
+    </div>
+
+    Result：<br>
+    <div class="text-container"></div>
+</body>
+
+<style>
+    .column-filter-container {
+        width: 800px;
+        height: 400px;
+        background-color: darkcyan;
+        border: 1px solid black;
+    }
+    .title {
+        text-align: center;
+    }
+    .nav {
+        width: 200px;
+        height: 30px;
+        display: inline-block;
+    }
+</style>
+</html>
